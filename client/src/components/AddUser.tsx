@@ -1,5 +1,4 @@
 import React from "react";
-import { fetchUser } from "../utils/fetchUser";
 import { getUser } from "../utils/getUser";
 
 interface AddUserFn {

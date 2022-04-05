@@ -5,16 +5,14 @@ import { getData } from "./utils/getData";
 import { AddTodos } from "./components/AddTodos";
 import { AddUser } from "./components/AddUser";
 
-function App() {  
+function App() {
   const [todosData, setTodosData] = useState([]);
 
-
-  const [user, setUser] = useState({username: null,
-    userId: null});
+  const [user, setUser] = useState({ username: null, userId: null });
 
   useEffect(() => {
     if (user.username) {
-      console.log(user)
+      console.log(user);
       getData(setTodosData, user.userId);
     }
   }, [user]);
@@ -49,9 +47,11 @@ function App() {
         </>
       ) : (
         <>
-          <AddUser addUser={(a: any) => {
-            setUser({username: a.username, userId: a.id})
-          }}/>
+          <AddUser
+            addUser={(a: any) => {
+              setUser({ username: a.username, userId: a.id });
+            }}
+          />
         </>
       )}
     </div>

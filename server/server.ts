@@ -2,7 +2,7 @@ import express from 'express';
 import dotenv from 'dotenv';
 import mysql from 'mysql'
 import cors from 'cors'
-import { deleteTodos, insertTodos, readTodos, updateTodos } from '../connections/connections';
+import { deleteTodos, insertTodos, insertUser, readTodos, updateTodos, searchUser } from '../connections/connections';
 
 dotenv.config()
 
@@ -36,10 +36,37 @@ server.post('/todos', (req: any, res: any) => {
   )
 })
 
-server.get('/todos', (req: any, res: any) => {
-  readTodos(connection, (result : any) => {
-    res.json(result)
-  })
+server.post('/user-todos', (req: any, res: any) => {
+  readTodos(
+    connection, 
+    req.body, 
+    (result : any) => {
+      res.json(result);
+    }
+  )
+})
+
+server.post('/users', (req: any, res: any) => {
+  insertUser(
+    connection, 
+    req.body, 
+    (result : any) => {
+      res.json(result);
+    }
+  )
+})
+
+server.put('/users', (req: any, res: any) => {
+  searchUser(
+    connection,
+    req.body,
+    (result : any) => {
+      res.json(result)
+      if (!result) {
+        return false
+      }
+    }
+  )
 })
 
 server.put('/todos', (req : any, res : any) => {

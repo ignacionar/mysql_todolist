@@ -6,6 +6,7 @@ interface TodoParagraphProps {
   refreshTodos: (arg: any) => void;
   todoText: string;
   id: number;
+  userId: any;
 }
 
 interface TodoParagraphState {
@@ -31,9 +32,9 @@ class TodoParagraph extends React.Component<
 
   handleEnter(e: any) {
     if (e.keyCode === 13 && e.target.value) {
-      fetchData("PUT", e.target.value, this.props.id);
+      fetchData("PUT", e.target.value, this.props.id, null);
       setTimeout(() => {
-        getData(this.props.refreshTodos);
+        getData(this.props.refreshTodos, this.props.userId);
       }, 50);
       this.setState({
         editMode: false,
@@ -53,6 +54,7 @@ class TodoParagraph extends React.Component<
 interface TodosDivProps {
   todos: TodoProps[];
   refreshTodos: (arg: any) => void;
+  userId: any;
 }
 
 interface TodoProps {
@@ -63,10 +65,10 @@ interface TodoProps {
 // FUNCTION COMP
 const TodosDiv: React.FC<TodosDivProps> = (props: any): JSX.Element => {
   function handleClick(id: number) {
-    fetchData("DELETE", null, id);
+    fetchData("DELETE", null, id, null);
 
     setTimeout(() => {
-      getData(props.refreshTodos);
+      getData(props.refreshTodos, props.userId);
     }, 50);
   }
 
@@ -76,6 +78,7 @@ const TodosDiv: React.FC<TodosDivProps> = (props: any): JSX.Element => {
         refreshTodos={props.refreshTodos}
         todoText={todo.todoText}
         id={todo.id}
+        userId={props.userId}
       />
       <button
         onClick={() => {

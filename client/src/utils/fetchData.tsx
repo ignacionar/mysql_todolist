@@ -1,7 +1,8 @@
 export const fetchData = async (
   method: string,
   todoText: string | null,
-  id: number | null
+  id: number | null,
+  userId: number | null
 ) => {
   if (method === "POST") {
     try {
@@ -13,6 +14,7 @@ export const fetchData = async (
         },
         body: JSON.stringify({
           todoText: todoText,
+          userId: userId
         }),
       });
     } catch (error) {

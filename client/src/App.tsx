@@ -1,98 +1,59 @@
 import React, { useEffect, useState } from "react";
 import TodosDiv from "./components/TodosDiv";
+import { SearchBar } from "./components/SearchBar";
 import { getData } from "./utils/getData";
-import { fetchData } from "./utils/fetchData";
+import { AddTodos } from "./components/AddTodos";
+import { AddUser } from "./components/AddUser";
 
-interface SearchProps {
-  todos: TodoProps[];
-  searchTodos: (arg: any) => void;
-  refreshTodos: (arg: any) => void;
-}
-
-interface TodoProps {
-  todoText: string;
-  id: number;
-}
-
-class Search extends React.Component<SearchProps> {
-  handleSearch(e: any) {
-    if (!e.target.value) {
-      getData(this.props.refreshTodos);
-    }
-    this.props.searchTodos(
-      this.props.todos.filter((todo) => todo.todoText.includes(e.target.value))
-    );
-  }
-
-  render() {
-    return (
-      <input
-        type={"text"}
-        className="search"
-        placeholder="Search TODOS..."
-        onChange={(e) => this.handleSearch(e)}
-      ></input>
-    );
-  }
-}
-
-interface AddTodosFn {
-  addTodos: (arg: any) => void;
-}
-
-class AddTodos extends React.Component<AddTodosFn> {
-  handleSubmit(e: any) {
-    if (e.keyCode === 13 && e.target.value) {
-      fetchData("POST", e.target.value, null);
-      setTimeout(() => {
-        getData(this.props.addTodos);
-      }, 50);
-      e.target.value = "";
-    }
-  }
-  render() {
-    return (
-      <input
-        type={"text"}
-        className="search"
-        placeholder="Add TODOS..."
-        onKeyDown={(e) => {
-          this.handleSubmit(e);
-        }}
-      ></input>
-    );
-  }
-}
-
-function App() {
+function App() {  
   const [todosData, setTodosData] = useState([]);
 
+
+  const [user, setUser] = useState({username: null,
+    userId: null});
+
   useEffect(() => {
-    getData(setTodosData);
-  }, []);
+    if (user.username) {
+      console.log(user)
+      getData(setTodosData, user.userId);
+    }
+  }, [user]);
 
   return (
     <div className="wrapper">
-      <AddTodos
-        addTodos={(a: any) => {
-          setTodosData(a);
-        }}
-      />
-      <Search
-        todos={todosData}
-        searchTodos={(a: any) => {
-          setTodosData(a);
-        }}
-        refreshTodos={(a: any) => {
-          setTodosData(a);
-        }}
-      />
-      <TodosDiv
-        todos={todosData}
-        refreshTodos={(a: any) => {
-          setTodosData(a);
-        }}
-      />
+      {user.username ? (
+        <>
+          <AddTodos
+            addTodos={(a: any) => {
+              setTodosData(a);
+            }}
+            userId={user.userId}
+          />
+          <SearchBar
+            todos={todosData}
+            refreshTodos={(a: any) => {
+              if (a[0]) {
+                return setTodosData(a);
+              }
+              setTodosData(todosData);
+            }}
+            userId={user.userId}
+          />
+          <TodosDiv
+            todos={todosData}
+            refreshTodos={(a: any) => {
+              setTodosData(a);
+            }}
+            userId={user.userId}
+          />
+        </>
+      ) : (
+        <>
+          <AddUser addUser={(a: any) => {
+            setUser({username: a.username, userId: a.id})
+          }}/>
+        </>
+      )}
     </div>
   );
 }
